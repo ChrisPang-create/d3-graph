@@ -1,14 +1,36 @@
-<!DOCTYPE html>
-<meta charset="utf-8">
-<title>Stacked area chart</title>
-<link rel="stylesheet" type="text/css" href="./inspector.css">
-<body>
-<script type="module">
-
-import define from "./index.js";
-import {Runtime, Library, Inspector} from "./runtime.js";
-
-const runtime = new Runtime();
-const main = runtime.module(define, Inspector.into(document.body));
-
-</script>
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2025 Q3-Q4 農產品批發市場交易行情</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <p class="eyebrow">2025Q3Q4 農產品批發市場交易行情</p>
+      <h1>主要批發市場交易量（公噸）</h1>
+      <p class="subtitle">
+        以交易量最大的前 8 項作物呈現堆疊面積圖，觀察 2025 年 Q3～Q4
+        每日交易量變化。
+      </p>
+    </header>
+    <main>
+      <section class="card">
+        <div class="chart-header">
+          <div>
+            <h2>每日交易量堆疊面積圖</h2>
+            <p id="date-range" class="meta"></p>
+          </div>
+          <div id="legend" class="legend"></div>
+        </div>
+        <div id="chart" class="chart"></div>
+      </section>
+    </main>
+    <footer>
+      <p>資料來源：2025Q3Q4 農產品批發市場交易行情。</p>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

@@ -1,33 +1,19 @@
-# Stacked area chart
+# 2025Q3Q4 農產品批發市場交易行情視覺化
 
-https://observablehq.com/d/f3cada482df9cc7f@584
+此專案以 D3.js 呈現 2025 年 Q3～Q4 主要批發市場交易量，並以交易量最大的前 8 項作物繪製堆疊面積圖。
 
-View this notebook in your browser by running a web server in this folder. For
-example:
+## 本機預覽
 
-~~~sh
+```sh
 npx http-server
-~~~
+```
 
-Or, use the [Observable Runtime](https://github.com/observablehq/runtime) to
-import this module directly into your application. To npm install:
+或使用其他靜態伺服器，例如：
 
-~~~sh
-npm install @observablehq/runtime@5
-npm install https://api.observablehq.com/d/f3cada482df9cc7f@584.tgz?v=3
-~~~
+```sh
+python -m http.server 8080
+```
 
-Then, import your notebook and the runtime as:
+## GitHub Pages 部署
 
-~~~js
-import {Runtime, Inspector} from "@observablehq/runtime";
-import define from "f3cada482df9cc7f";
-~~~
-
-To log the value of the cell named “foo”:
-
-~~~js
-const runtime = new Runtime();
-const main = runtime.module(define);
-main.value("foo").then(value => console.log(value));
-~~~
+此專案已包含 GitHub Pages 的部署 workflow，推送到 `main` 分支後會自動發布。請在 GitHub 專案的 **Settings → Pages** 選擇 **GitHub Actions** 作為來源，發布完成後即可透過 Pages URL 存取。
