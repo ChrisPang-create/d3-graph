@@ -1,22 +1,16 @@
-# 2025Q3Q4 農產品批發市場交易行情
+# Stacked area chart
 
-這是一個使用 D3 的堆疊面積圖專案，視覺化 2025 年第三、四季農產品批發市場交易量。
+https://observablehq.com/d/f3cada482df9cc7f@584
 
-## 本機預覽
-
-在此資料夾啟動簡單的靜態網站伺服器即可瀏覽：
+View this notebook in your browser by running a web server in this folder. For
+example:
 
 ~~~sh
 npx http-server
 ~~~
 
-## GitHub Pages 部署
-
-此專案已提供 GitHub Actions 的 Pages 部署流程，推送到 `main` 分支後會自動發布。請在 GitHub 專案設定中啟用 Pages（來源選擇 GitHub Actions）。
-
-## Observable Runtime
-
-若要將此模組直接引入其他應用，可使用 [Observable Runtime](https://github.com/observablehq/runtime)：
+Or, use the [Observable Runtime](https://github.com/observablehq/runtime) to
+import this module directly into your application. To npm install:
 
 ~~~sh
 npm install @observablehq/runtime@5
