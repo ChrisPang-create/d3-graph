@@ -12,7 +12,7 @@ function _key(Swatches,chart){return(
 Swatches(chart.scales.color, {columns: "180px"})
 )}
 
-function _chart(d3,data,topCrops)
+function _chart(d3,data,activeCrops)
 {
   // Specify the chart’s dimensions.
   const width = 928;
@@ -24,7 +24,7 @@ function _chart(d3,data,topCrops)
 
   // Determine the series that need to be stacked.
   const series = d3.stack()
-      .keys(topCrops) // distinct series keys, in input order
+      .keys(activeCrops) // distinct series keys, in input order
       .value(([, D], key) => D.get(key)?.totalVolume ?? 0) // get value for each series key and stack
     (d3.index(data, d => d.date, d => d.crop)); // group by stack then series key
 
@@ -122,17 +122,48 @@ function _filteredData(data,topCrops){return(
 data.filter((row) => topCrops.includes(row.crop))
 )}
 
+function _selectedCrop(d3,topCrops)
+{
+  const form = d3.create("form")
+    .attr("style", "display: flex; align-items: center; gap: 8px; font: 12px var(--sans-serif);");
+  form.append("label")
+    .attr("for", "crop-select")
+    .text("作物篩選");
+  const select = form.append("select")
+    .attr("id", "crop-select")
+    .attr("name", "crop");
+  select.selectAll("option")
+    .data(["全部", ...topCrops])
+    .join("option")
+    .attr("value", (d) => d)
+    .text((d) => d);
+  form.node().value = "全部";
+  select.on("input", () => {
+    form.node().value = select.property("value");
+    form.node().dispatchEvent(new Event("input", {bubbles: true}));
+  });
+  return form.node();
+}
+
+function _activeCrops(topCrops,selectedCrop){return(
+selectedCrop === "全部" ? topCrops : [selectedCrop]
+)}
+
+function _displayData(filteredData,activeCrops){return(
+filteredData.filter((row) => activeCrops.includes(row.crop))
+)}
+
 function _6(md){return(
 md`使用 [Observable Plot](https://observablehq.com/plot) 的簡潔 API，也可以繪製相同資料的堆疊面積圖。`
 )}
 
-function _7(Plot,filteredData){return(
+function _7(Plot,displayData){return(
 Plot.plot({
   marginLeft: 60,
   y: {grid: true},
   color: {legend: true, columns: 6},
   marks: [
-    Plot.areaY(filteredData, {x: "date", y: "totalVolume", fill: "crop"}),
+    Plot.areaY(displayData, {x: "date", y: "totalVolume", fill: "crop"}),
     Plot.ruleY([0])
   ]
 })
@@ -147,13 +178,17 @@ export default function define(runtime, observer) {
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer("key")).define("key", ["Swatches","chart"], _key);
-  main.variable(observer("chart")).define("chart", ["d3","filteredData","topCrops"], _chart);
+  main.variable(observer("chart")).define("chart", ["d3","displayData","activeCrops"], _chart);
   main.variable(observer("data")).define("data", ["FileAttachment","d3"], _data);
   main.variable(observer("topCrops")).define("topCrops", ["d3","data"], _topCrops);
   main.variable(observer("filteredData")).define("filteredData", ["data","topCrops"], _filteredData);
+  main.variable(observer("viewof selectedCrop")).define("viewof selectedCrop", ["d3","topCrops"], _selectedCrop);
+  main.variable(observer("selectedCrop")).define("selectedCrop", ["Generators", "viewof selectedCrop"], (G, _) => G.input(_));
+  main.variable(observer("activeCrops")).define("activeCrops", ["topCrops","selectedCrop"], _activeCrops);
+  main.variable(observer("displayData")).define("displayData", ["filteredData","activeCrops"], _displayData);
   const child1 = runtime.module(define1);
   main.import("Swatches", child1);
   main.variable(observer()).define(["md"], _6);
-  main.variable(observer()).define(["Plot","filteredData"], _7);
+  main.variable(observer()).define(["Plot","displayData"], _7);
   return main;
 }
