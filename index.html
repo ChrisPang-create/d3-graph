@@ -1,14 +1,31 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
-<title>Stacked area chart</title>
-<link rel="stylesheet" type="text/css" href="./inspector.css">
-<body>
-<script type="module">
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2025Q3Q4 農產品批發市場交易行情</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">2025 Q3-Q4 農產品批發市場交易行情</p>
+        <h1>主要作物均價趨勢</h1>
+        <p class="subtitle">
+          依交易量選出前五名作物，以折線圖呈現每日主要批發市場均價（元/公斤）。
+        </p>
+      </header>
 
-import define from "./index.js";
-import {Runtime, Library, Inspector} from "./runtime.js";
+      <section class="card">
+        <div id="chart" aria-live="polite"></div>
+        <div id="legend" class="legend"></div>
+      </section>
 
-const runtime = new Runtime();
-const main = runtime.module(define, Inspector.into(document.body));
+      <section class="notes">
+        <p>資料來源：2025Q3Q4農產品批發市場交易行情.csv</p>
+      </section>
+    </main>
 
-</script>
+    <script type="module" src="./index.js"></script>
+  </body>
+</html>
