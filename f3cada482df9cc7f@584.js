@@ -1,11 +1,9 @@
 import define1 from "./a33468b95d0b15b0@817.js";
 
 function _1(md){return(
-md`<div style="color: grey; font: 13px/25.5px var(--sans-serif); text-transform: uppercase;"><h1 style="display: none;">Stacked area chart</h1><a href="https://d3js.org/">D3</a> › <a href="/@d3/gallery">Gallery</a></div>
+md`# 2025Q3Q4 農產品批發市場交易行情
 
-# Stacked area chart
-
-This chart shows unemployed persons by industry, 2000–2010. Compare to a [streamgraph](/@d3/streamgraph/2) and [normalized stacked area](/@d3/normalized-stacked-area-chart/2). Data: [BLS](https://www.bls.gov/)`
+以下圖表以堆疊面積圖呈現 2025 年第三、四季各作物在主要批發市場的交易量（公噸），便於比較不同作物的供應規模與變化趨勢。資料來源：\`2025Q3Q4農產品批發市場交易行情.csv\`。`
 )}
 
 function _key(Swatches,chart){return(
@@ -20,13 +18,13 @@ function _chart(d3,data)
   const marginTop = 10;
   const marginRight = 10;
   const marginBottom = 20;
-  const marginLeft = 40;
+  const marginLeft = 60;
 
   // Determine the series that need to be stacked.
   const series = d3.stack()
-      .keys(d3.union(data.map(d => d.industry))) // distinct series keys, in input order
-      .value(([, D], key) => D.get(key).unemployed) // get value for each series key and stack
-    (d3.index(data, d => d.date, d => d.industry)); // group by stack then series key
+      .keys(d3.union(data.map(d => d.crop))) // distinct series keys, in input order
+      .value(([, D], key) => D.get(key).volume) // get value for each series key and stack
+    (d3.index(data, d => d.date, d => d.crop)); // group by stack then series key
 
   // Prepare the scales for positional and color encodings.
   const x = d3.scaleUtc()
@@ -63,11 +61,12 @@ function _chart(d3,data)
           .attr("x2", width - marginLeft - marginRight)
           .attr("stroke-opacity", 0.1))
       .call(g => g.append("text")
-          .attr("x", -marginLeft)
+          .attr("x", -marginLeft + 10)
           .attr("y", 10)
           .attr("fill", "currentColor")
           .attr("text-anchor", "start")
-          .text("↑ Unemployed persons"));
+          .attr("font-weight", "bold")
+          .text("交易量（公噸）"));
 
   // Append a path for each series.
   svg.append("g")
@@ -89,21 +88,35 @@ function _chart(d3,data)
 }
 
 
-function _data(FileAttachment){return(
-FileAttachment("unemployment.csv").csv({typed: true})
+function _data(d3,FileAttachment){return(
+FileAttachment("2025Q3Q4農產品批發市場交易行情.csv").csv({typed: true}).then((rows) => {
+  const parseDate = d3.timeParse("%Y/%m/%d");
+  return rows.map((row) => {
+    const importVolume = row["主要批發市場交易量(進口)(公噸)"] || 0;
+    const domesticVolume = row["主要批發市場交易量(國內)(公噸)"] || 0;
+    return {
+      date: parseDate(row["日期"]),
+      crop: row["作物品項"],
+      volume: importVolume + domesticVolume,
+      avgPrice: row["主要批發市場均價(元/公斤)"] || null,
+      normalVolume: row["前三年(平常年)主要批發市場平均交易量(公噸)"] || null,
+      normalPrice: row["前三年(平常年)主要批發市場均價(元/公斤)"] || null
+    };
+  });
+})
 )}
 
 function _6(md){return(
-md`Using [Observable Plot](https://observablehq.com/plot)’s concise API, you can create a similar chart with an [area mark](https://observablehq.com/plot/marks/area). See the [Plot: Stacked area chart](https://observablehq.com/@observablehq/plot-stacked-area-chart) example notebook.`
+md`使用 [Observable Plot](https://observablehq.com/plot) 也可以快速建立相同的堆疊面積圖，以下為 Plot 版本的示意。`
 )}
 
 function _7(Plot,data){return(
 Plot.plot({
   marginLeft: 60,
-  y: {grid: true},
+  y: {grid: true, label: "交易量（公噸）"},
   color: {legend: true, columns: 6},
   marks: [
-    Plot.areaY(data, {x: "date", y: "unemployed", fill: "industry"}),
+    Plot.areaY(data, {x: "date", y: "volume", fill: "crop"}),
     Plot.ruleY([0])
   ]
 })
@@ -113,13 +126,13 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["unemployment.csv", {url: new URL("./files/76f13741128340cc88798c0a0b7fa5a2df8370f57554000774ab8ee9ae785ffa2903010cad670d4939af3e9c17e5e18e7e05ed2b38b848ac2fc1a0066aa0005f.csv", import.meta.url), mimeType: "text/csv", toString}]
+    ["2025Q3Q4農產品批發市場交易行情.csv", {url: new URL("./2025Q3Q4農產品批發市場交易行情.csv", import.meta.url), mimeType: "text/csv", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer("key")).define("key", ["Swatches","chart"], _key);
   main.variable(observer("chart")).define("chart", ["d3","data"], _chart);
-  main.variable(observer("data")).define("data", ["FileAttachment"], _data);
+  main.variable(observer("data")).define("data", ["d3","FileAttachment"], _data);
   const child1 = runtime.module(define1);
   main.import("Swatches", child1);
   main.variable(observer()).define(["md"], _6);
