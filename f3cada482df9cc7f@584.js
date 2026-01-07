@@ -125,21 +125,25 @@ data.filter((row) => topCrops.includes(row.crop))
 function _selectedCrop(d3,topCrops)
 {
   const form = d3.create("form")
-    .attr("style", "display: flex; align-items: center; gap: 8px; font: 12px var(--sans-serif);");
-  form.append("label")
-    .attr("for", "crop-select")
+    .attr("style", "display: flex; flex-wrap: wrap; align-items: center; gap: 12px; font: 12px var(--sans-serif);");
+  form.append("span")
+    .attr("style", "font-weight: 600;")
     .text("作物篩選");
-  const select = form.append("select")
-    .attr("id", "crop-select")
-    .attr("name", "crop");
-  select.selectAll("option")
-    .data(["全部", ...topCrops])
-    .join("option")
+  const options = ["全部", ...topCrops];
+  const items = form.selectAll("label")
+    .data(options)
+    .join("label")
+    .attr("style", "display: inline-flex; align-items: center; gap: 6px; cursor: pointer;");
+  items.append("input")
+    .attr("type", "radio")
+    .attr("name", "crop")
     .attr("value", (d) => d)
+    .property("checked", (d, i) => i === 0);
+  items.append("span")
     .text((d) => d);
   form.node().value = "全部";
-  select.on("input", () => {
-    form.node().value = select.property("value");
+  form.on("input", (event) => {
+    form.node().value = event.target.value;
     form.node().dispatchEvent(new Event("input", {bubbles: true}));
   });
   return form.node();
